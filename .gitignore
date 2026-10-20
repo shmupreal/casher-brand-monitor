@@ -1,0 +1,9 @@
+# вход в IG, пароль прокси, собранные данные - не коммитить
+_session/
+proxy.txt
+data/
+thumbs/
+dashboard_data.js
+__pycache__/
+*.pyc
+*.tmp

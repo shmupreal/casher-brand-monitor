@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Монитор брендов Casher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f3ef;--panel:#ffffff;--panel2:#f0eee8;--line:#e2dfd6;--text:#17171a;--muted:#6b6a66;--faint:#9a988f;
+  --accent:#e2471b;--accent-soft:#fde6dc;--hot:#e2471b;--warm:#f08a1c;--mild:#c9a227;--cool:#8a8880;
+  --good:#1f8a4c;--shadow:0 1px 2px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f0f11;--panel:#18181b;--panel2:#202024;--line:#2b2b30;--text:#f2f1ee;--muted:#a3a29c;--faint:#6f6e69;
+  --accent:#ff6a3d;--accent-soft:#3a1f16;--hot:#ff6a3d;--warm:#ffa040;--mild:#e0bc45;--cool:#8a8880;--good:#46c07a;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.35);}}
+:root[data-theme="dark"]{
+  --bg:#0f0f11;--panel:#18181b;--panel2:#202024;--line:#2b2b30;--text:#f2f1ee;--muted:#a3a29c;--faint:#6f6e69;
+  --accent:#ff6a3d;--accent-soft:#3a1f16;--hot:#ff6a3d;--warm:#ffa040;--mild:#e0bc45;--cool:#8a8880;--good:#46c07a;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.35);}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Manrope,system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1440px;margin:0 auto;padding:24px 24px 60px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;margin-bottom:20px}
+h1{font-size:26px;line-height:1.1;margin:0;font-weight:800;letter-spacing:-.02em}
+h1 span{color:var(--accent)}
+.sub{color:var(--muted);margin-top:6px}
+.runinfo{color:var(--muted);font-size:13px;text-align:right}
+.runinfo b{color:var(--text);font-weight:600}
+.theme{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:8px;padding:5px 10px;font:inherit;font-size:12px;cursor:pointer;margin-top:6px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+.kpi .v{font-size:26px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.kpi .l{color:var(--muted);font-size:12.5px;margin-top:2px}
+.kpi .v small{font-size:14px;font-weight:600;color:var(--muted)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:14px;overflow-x:auto}
+.tab{padding:10px 14px;border:0;background:none;color:var(--muted);font:inherit;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.tab.on{color:var(--text);border-bottom-color:var(--accent)}
+.tab .c{display:inline-block;margin-left:6px;padding:0 7px;border-radius:10px;background:var(--panel2);font-size:12px;color:var(--muted)}
+.hint{color:var(--muted);font-size:13px;margin:-4px 0 12px}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.filters input,.filters select{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:8px 10px;font:inherit;font-size:13px;min-width:0}
+.filters input{width:220px}
+.filters input[type=date]{width:auto}
+.filters label{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.flt{display:flex;align-items:center;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:13px;margin:4px 0 10px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--accent-soft);color:var(--accent);border-radius:20px;padding:5px 10px;font-size:12.5px;font-weight:600;cursor:pointer;border:0;font-family:inherit}
+.segs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.seg{border:1px solid var(--line);background:var(--panel);border-radius:20px;padding:4px 10px;font-size:12.5px;cursor:pointer;color:var(--text);font-family:inherit}
+.seg b{color:var(--accent);margin-left:4px}
+.seg.on{border-color:var(--accent);background:var(--accent-soft)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.card.own{border-color:var(--accent)}
+.thumb{position:relative;aspect-ratio:9/13;background:var(--panel2);display:block;overflow:hidden}
+.thumb img{position:relative;width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s}
+.card:hover .thumb img{transform:scale(1.03)}
+.thumb .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:800;color:var(--faint)}
+.xb{position:absolute;left:10px;top:10px;padding:4px 9px;border-radius:9px;font-weight:800;font-size:15px;color:#fff;background:var(--cool);font-variant-numeric:tabular-nums;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.xb.x10{background:var(--hot)}.xb.x5{background:var(--warm)}.xb.x3{background:var(--mild);color:#1b1a16}
+.thumb video.pv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;background:#000}
+.xb,.tag{z-index:3}
+.thumb.wait::after{content:"";position:absolute;left:50%;bottom:14px;width:22px;height:22px;margin-left:-11px;border-radius:50%;border:3px solid rgba(255,255,255,.35);border-top-color:#fff;animation:spin .8s linear infinite;z-index:3}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tag{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+.tag span{background:rgba(0,0,0,.62);color:#fff;font-size:11.5px;font-weight:600;padding:3px 7px;border-radius:7px}
+.tag .nw{background:var(--good)}
+.tag .us{background:var(--accent)}
+.body{padding:11px 12px 12px;display:flex;flex-direction:column;gap:3px;flex:1}
+.brand{font-weight:700;font-size:14px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brand a:hover{color:var(--accent)}
+.handle{color:var(--faint);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meta{color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nums{margin-top:6px;font-size:13px;font-variant-numeric:tabular-nums}
+.nums b{font-size:16px;font-weight:800}
+.nums .md{color:var(--muted)}
+.gain{font-size:12.5px;color:var(--good);font-weight:600;font-variant-numeric:tabular-nums}
+.gain.zero{color:var(--faint);font-weight:500}
+.note{margin-top:8px;padding:8px 9px;border-radius:9px;background:var(--panel2);font-size:12.5px;line-height:1.4}
+.note b{display:block;font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-top:4px}
+.note b:first-child{margin-top:0}
+.more{display:block;margin:18px auto 0;border:1px solid var(--line);background:var(--panel);color:var(--text);padding:10px 18px;border-radius:10px;font:inherit;font-weight:600;cursor:pointer}
+.empty{padding:50px 20px;text-align:center;color:var(--muted);background:var(--panel);border:1px dashed var(--line);border-radius:14px}
+.tablewrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{position:sticky;top:0;background:var(--panel2);font-size:12px;color:var(--muted);font-weight:700;cursor:pointer;user-select:none}
+th.r,td.r{text-align:right}
+th .ar{color:var(--accent)}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--panel2)}
+tr.own td{background:var(--accent-soft)}
+td .h{color:var(--faint);font-size:12px;margin-left:6px}
+.pill{display:inline-block;padding:2px 8px;border-radius:8px;font-weight:700;font-size:12px}
+.pill.x10{background:var(--hot);color:#fff}.pill.x5{background:var(--warm);color:#fff}.pill.x3{background:var(--mild);color:#1b1a16}
+.st-bad{color:var(--accent)}
+.st-ok{color:var(--good)}
+.found{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.found:empty{display:none}
+.fb{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 12px;cursor:pointer;font:inherit;color:var(--text);text-align:left;box-shadow:var(--shadow)}
+.fb:hover{border-color:var(--accent)}
+.fb b{font-size:14px}
+.fb span{color:var(--muted);font-size:12px}
+.bp{display:flex;flex-wrap:wrap;align-items:center;gap:10px 28px;background:var(--panel);border:1px solid var(--accent);border-radius:14px;padding:14px 18px;margin-bottom:14px;box-shadow:var(--shadow);width:100%}
+.bp h2{margin:0;font-size:20px;font-weight:800}
+.bp .h{color:var(--faint);font-size:13px}
+.bp .st{display:flex;flex-direction:column}
+.bp .st b{font-size:17px;font-variant-numeric:tabular-nums}
+.bp .st span{font-size:12px;color:var(--muted)}
+.bp .act{margin-left:auto;display:flex;gap:8px}
+.bp a,.bp button{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:9px;padding:7px 12px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+footer{margin-top:30px;color:var(--faint);font-size:12px}
+@media (max-width:900px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){
+  .wrap{padding:16px 16px 40px}
+  h1{font-size:22px}
+  .runinfo{text-align:left}
+  .filters input{width:100%}
+  .filters select{flex:1 1 45%}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .kpi .v{font-size:22px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Монитор брендов <span>Casher</span></h1>
+      <div class="sub">Что сейчас залетает у брендов из таблицы аналитики. Залёт - ролик, набравший в разы больше медианы своего аккаунта.</div>
+    </div>
+    <div class="runinfo" id="runinfo"></div>
+  </header>
+  <div class="kpis" id="kpis"></div>
+  <div class="tabs" id="tabs"></div>
+  <div class="hint" id="hint"></div>
+  <div class="filters" id="filters">
+    <input id="q" type="search" placeholder="Бренд или @ник">
+    <select id="region"></select>
+    <select id="seg"></select>
+    <select id="src"></select>
+    <label id="fresh-l">Свежесть <select id="fresh"><option value="3">3 дня</option><option value="7">7 дней</option><option value="14">14 дней</option></select></label>
+    <label id="per-l">Период <select id="per"><option value="7">7 дней</option><option value="30">30 дней</option><option value="90">3 месяца</option><option value="365">год</option><option value="all">всё время</option><option value="custom">свой период</option></select></label>
+    <label id="custom-l">с <input type="date" id="from"> по <input type="date" id="to"></label>
+    <label id="minx-l">Кратность от <select id="minx"><option value="0">любая</option><option value="2">×2</option><option value="3">×3</option><option value="5">×5</option><option value="10">×10</option></select></label>
+    <label id="minv-l">Просмотры от <select id="minv"><option value="0">любые</option><option value="5000">5 тыс.</option><option value="20000">20 тыс.</option><option value="50000">50 тыс.</option><option value="100000">100 тыс.</option><option value="500000">500 тыс.</option></select></label>
+    <label id="sort-l">Сортировка <select id="sort"><option value="x">по кратности</option><option value="views">по просмотрам</option><option value="gain">по приросту</option><option value="fresh">сначала свежие</option></select></label>
+    <span id="brandchip"></span>
+  </div>
+  <div class="found" id="found"></div>
+  <div class="segs" id="segs"></div>
+  <div id="view"></div>
+  <footer id="foot"></footer>
+</div>
+<script src="dashboard_data.js"></script>
+<script>if(!window.MONITOR) document.write('<script src="sample/dashboard_data.js"><\/script>');</script>
+<script>
+(function(){
+const D = window.MONITOR;
+const $ = id => document.getElementById(id);
+if(!D){ $('view').innerHTML = '<div class="empty">Нет данных. Запусти ЗАПУСК.bat - сборщик соберёт срез и обновит эту страницу.</div>'; return; }
+
+const store = {get(k,d){try{const v=localStorage.getItem('mon_'+k);return v===null?d:JSON.parse(v)}catch(e){return d}},
+               set(k,v){try{localStorage.setItem('mon_'+k,JSON.stringify(v))}catch(e){}}};
+const theme = store.get('theme', '');
+if(theme) document.documentElement.setAttribute('data-theme', theme);
+
+const acc = {}; D.accounts.forEach(a => acc[a.h] = a);
+const reels = D.reels.filter(r => acc[r.h]);
+const fmt = n => { if(n==null) return '-'; const a=Math.abs(n);
+  if(a>=1e6) return (n/1e6).toFixed(a>=1e7?0:1).replace('.',',').replace(',0','')+' млн';
+  if(a>=1e3) return (n/1e3).toFixed(a>=1e5?0:1).replace('.',',').replace(',0','')+' тыс.';
+  return String(n); };
+const fx = x => x==null ? '-' : '×'+(x>=10?Math.round(x):x.toFixed(1).replace('.',','));
+const xcls = x => x>=10?'x10':x>=5?'x5':x>=3?'x3':'';
+const ddmm = s => s ? s.slice(8,10)+'.'+s.slice(5,7) : '';
+const ddmmyy = s => s ? s.slice(8,10)+'.'+s.slice(5,7)+'.'+s.slice(0,4) : '...';
+const ago = d => d<=0?'сегодня':d===1?'вчера':d+' дн. назад';
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+// ---- шапка и KPI
+const dd = D.day.split('-').reverse().join('.');
+$('runinfo').innerHTML = 'Срез <b>'+dd+'</b>'+(D.finished?' · собран к <b>'+D.finished.slice(11,16)+'</b>':'')+
+  '<br>Аккаунтов в срезе: <b>'+D.ok+'</b> из '+D.total+(D.days.length>1?' · срезов: '+D.days.length:'')+
+  '<br><button class="theme" id="themebtn">Тема</button>';
+$('themebtn').onclick = () => { const cur = document.documentElement.getAttribute('data-theme') ||
+  (matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'); const nx = cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme', nx); store.set('theme', nx); };
+
+const hot7 = reels.filter(r => r.age<=7 && r.x>=3);
+const newR = reels.filter(r => r.new);
+const best = hot7.slice().sort((a,b)=>b.x-a.x)[0];
+$('kpis').innerHTML = [
+  [hot7.length, 'залётов ×3+ за последние 7 дней'],
+  [new Set(hot7.map(r=>r.h)).size, 'брендов, у которых залетело за неделю'],
+  [newR.length, 'новых роликов с прошлого среза'],
+  [best ? fx(best.x)+' <small>'+esc(acc[best.h].name)+'</small>' : '-', 'самый сильный залёт недели'],
+].map(([v,l]) => '<div class="kpi"><div class="v">'+v+'</div><div class="l">'+l+'</div></div>').join('');
+
+// ---- вкладки
+const TABS = [
+  {id:'now', name:'Залетает сейчас', hint:'Свежие ролики, которые уже обогнали медиану своего аккаунта. Главная вкладка на каждое утро.'},
+  {id:'new', name:'Новое', hint:'Всё, что бренды выложили с прошлого среза, - видно, что делают прямо сейчас, даже если ещё не залетело.'},
+  {id:'all', name:'Все ролики', hint:''},
+  {id:'brands', name:'Бренды', hint:'Все аккаунты из таблицы. Нажми на строку - откроются залёты этого бренда.'},
+];
+let S = Object.assign({tab:'now', q:'', region:'', seg:'', src:'', fresh:'7', minxNow:'3', minxAll:'0', per:'30', from:'', to:'', minv:'0', sort:'x', brand:'', bsort:'hot30', bdir:-1}, store.get('state', {}));
+S.brand = ''; S.q = ''; if(S.tab==='month') S.tab = 'all'; delete S.minx;
+if(!S.to) S.to = D.day; if(!S.from) S.from = new Date(new Date(D.day).getTime() - 29*864e5).toISOString().slice(0,10);
+const minxKey = () => S.tab==='now' ? 'minxNow' : 'minxAll';
+
+function opts(el, label, vals){ el.innerHTML = '<option value="">'+label+'</option>' + vals.map(v => '<option>'+esc(v)+'</option>').join(''); }
+const uniq = k => [...new Set(D.accounts.map(a => a[k]).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ru'));
+opts($('region'), 'Все регионы', uniq('region'));
+opts($('seg'), 'Все сегменты', uniq('seg'));
+opts($('src'), 'Все источники', [...new Set(D.accounts.map(a => (a.src||'').split(' + ')[0]).filter(Boolean))]);
+$('minx').addEventListener('input', () => { S[minxKey()] = $('minx').value; save(); render(); });
+['q','region','seg','src','fresh','per','from','to','minv','sort'].forEach(k => { $(k).value = S[k]; $(k).addEventListener('input', () => { S[k] = $(k).value; save(); render(); }); });
+function save(){ const c = Object.assign({}, S); delete c.brand; delete c.q; store.set('state', c); }
+
+function pass(r){
+  const a = acc[r.h];
+  if(S.brand && r.h !== S.brand) return false;
+  if(S.q){ const q = S.q.toLowerCase().replace('@',''); if(!(a.name.toLowerCase().includes(q) || r.h.includes(q))) return false; }
+  if(S.region && a.region !== S.region) return false;
+  if(S.seg && a.seg !== S.seg) return false;
+  if(S.src && !(a.src||'').startsWith(S.src)) return false;
+  return true;
+}
+function listFor(tab){
+  let L = reels.filter(pass);
+  const minv = +S.minv;
+  if(tab==='now') L = L.filter(r => r.age <= +S.fresh && r.x != null && r.x >= Math.max(+S.minxNow, 1));
+  if(tab==='new') L = L.filter(r => r.new);
+  if(tab==='all'){
+    if(S.per==='custom') L = L.filter(r => (!S.from || r.posted.slice(0,10) >= S.from) && (!S.to || r.posted.slice(0,10) <= S.to));
+    else if(S.per!=='all') L = L.filter(r => r.age <= +S.per);
+    const mx = +S.minxAll; if(mx) L = L.filter(r => r.x != null && r.x >= mx);
+  }
+  if(tab!=='new' && minv) L = L.filter(r => r.views >= minv);
+  const key = {x:r=>r.x||0, views:r=>r.views, gain:r=>r.gain||0, fresh:r=>r.posted}[tab==='new' && S.sort==='x' ? 'fresh' : S.sort];
+  return L.sort((a,b) => key(b) > key(a) ? 1 : key(b) < key(a) ? -1 : 0);
+}
+
+function renderTabs(){
+  $('tabs').innerHTML = TABS.map(t => {
+    const c = t.id==='brands' ? D.accounts.length : listFor(t.id).length;
+    return '<button class="tab'+(S.tab===t.id?' on':'')+'" data-t="'+t.id+'">'+t.name+'<span class="c">'+c+'</span></button>'; }).join('');
+  $('tabs').querySelectorAll('.tab').forEach(b => b.onclick = () => { S.tab = b.dataset.t; save(); render(); });
+  const perTxt = S.per==='all' ? 'за всё время, что есть в базе' : S.per==='custom' ? 'с '+ddmmyy(S.from)+' по '+ddmmyy(S.to) : 'за последние '+$('per').selectedOptions[0].text;
+  $('hint').textContent = S.tab==='all' ? 'Ролики '+perTxt+'. Кратность «любая» - все ролики, «×3» и выше - только залёты. Глубина базы у бренда видна в его карточке.' : TABS.find(t => t.id===S.tab).hint;
+  $('minx').value = S[minxKey()];
+  $('per-l').style.display = S.tab==='all' ? '' : 'none';
+  $('custom-l').style.display = S.tab==='all' && S.per==='custom' ? '' : 'none';
+  const r = S.tab !== 'brands';
+  $('fresh-l').style.display = S.tab==='now' ? '' : 'none';
+  $('minx-l').style.display = (S.tab==='now'||S.tab==='all') ? '' : 'none';
+  $('minv-l').style.display = (S.tab==='now'||S.tab==='all') ? '' : 'none';
+  $('sort-l').style.display = r ? '' : 'none';
+  $('brandchip').innerHTML = '';
+}
+
+function renderSegs(L){
+  if(S.tab==='brands'){ $('segs').innerHTML=''; return; }
+  const c = {}; L.forEach(r => { const s = acc[r.h].seg || 'Без сегмента'; c[s] = (c[s]||0)+1; });
+  const top = Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  if(!top.length){ $('segs').innerHTML=''; return; }
+  $('segs').innerHTML = '<span class="seg" style="border:0;background:none;cursor:default;color:var(--muted)">Где это:</span>' +
+    top.map(([s,n]) => '<button class="seg'+(S.seg===s?' on':'')+'" data-s="'+esc(s)+'">'+esc(s)+'<b>'+n+'</b></button>').join('');
+  $('segs').querySelectorAll('.seg[data-s]').forEach(b => b.onclick = () => { S.seg = S.seg===b.dataset.s ? '' : b.dataset.s; $('seg').value = S.seg; save(); render(); });
+}
+
+let limit = 120;
+function card(r){
+  const a = acc[r.h], url = 'https://www.instagram.com/reel/'+r.code+'/';
+ const gain = r.seen ? '<div class="gain zero">просмотры на '+ddmm(r.seen)+'</div>' : r.gain!=null ? '<div class="gain'+(r.gain<=0?' zero':'')+'">'+(r.gain>0?'+'+fmt(r.gain)+' в сутки':'без прироста')+' <span style="color:var(--faint);font-weight:500">с '+ddmm(r.prev)+'</span></div>' : '';
+  const n = r.note ? '<div class="note">'+['format:Формат','hook:Хук','why:Почему залетело','apply:Как применить для Casher']
+      .map(p => { const [k,l]=p.split(':'); return r.note[k] ? '<b>'+l+'</b>'+esc(r.note[k]) : ''; }).join('')+'</div>' : '';
+  const init = esc((a.name||r.h).trim().charAt(0).toUpperCase());
+  return '<div class="card'+(a.own?' own':'')+'">'+
+    '<a class="thumb" data-code="'+r.code+'" href="'+url+'" target="_blank" rel="noopener">'+
+      '<div class="ph">'+init+'</div>'+
+      (r.th ? '<img loading="lazy" referrerpolicy="no-referrer" src="'+esc(r.th)+'" alt="" onerror="this.remove()">' : '')+
+      (r.x!=null ? '<span class="xb '+xcls(r.x)+'">'+fx(r.x)+'</span>' : '')+
+      '<div class="tag">'+(a.own?'<span class="us">наш</span>':'')+(r.new?'<span class="nw">новый</span>':'')+'<span>'+ago(r.age)+'</span></div>'+
+    '</a>'+
+    '<div class="body">'+
+      '<div class="brand"><a href="https://www.instagram.com/'+r.h+'/reels/" target="_blank" rel="noopener">'+esc(a.name)+'</a></div>'+
+      '<div class="handle">@'+esc(r.h)+'</div>'+
+      '<div class="meta">'+esc([a.region, a.seg].filter(Boolean).join(' · '))+'</div>'+
+      '<div class="nums"><b>'+fmt(r.views)+'</b> <span class="md">· медиана '+fmt(a.med)+'</span></div>'+
+      gain + n +
+    '</div></div>';
+}
+
+function renderReels(L){
+  if(!L.length){ $('view').innerHTML = '<div class="empty">'+(S.q && $('found').innerHTML ? 'В этой вкладке у найденных брендов нет роликов под фильтры. Нажми на бренд выше - откроются все его ролики.' : 'Под эти фильтры ничего нет. Ослабь кратность или свежесть.')+'</div>'; return; }
+  $('view').innerHTML = '<div class="grid">'+L.slice(0,limit).map(card).join('')+'</div>'+
+    (L.length>limit ? '<button class="more" id="more">Показать ещё ('+(L.length-limit)+')</button>' : '');
+  if(L.length>limit) $('more').onclick = () => { limit += 120; renderReels(L); };
+  attachPreview();
+}
+
+// ---- превью ролика при наведении: ссылку на mp4 даёт локальный сервер (ДАШБОРД.bat), видео не хранится
+const LIVE = location.protocol.startsWith('http') && !matchMedia('(hover: none)').matches;
+const vurl = {};
+let hoverEl = null, hoverT = null;
+const vreq = {};
+function getVideo(code){
+  if(vurl[code]) return Promise.resolve(vurl[code]);
+  if(!vreq[code]) vreq[code] = fetch('/api/video?code='+encodeURIComponent(code)).then(r => r.json())
+    .then(j => { delete vreq[code]; if(j.url) vurl[code] = j.url; return j.url; })
+    .catch(() => { delete vreq[code]; return null; });
+  return vreq[code];
+}
+// заранее берём ссылки (не видео) для карточек, которые видны на экране, по одной
+const pre = []; let preBusy = false;
+const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => {
+  if(e.isIntersecting){ const c = e.target.dataset.code; if(!vurl[c] && !pre.includes(c)) pre.push(c); io.unobserve(e.target); }
+}), {rootMargin: '200px'}) : null;
+async function prefetchLoop(){
+  if(preBusy) return; preBusy = true;
+  while(pre.length){ const c = pre.shift(); if(!vurl[c]) await getVideo(c); }
+  preBusy = false;
+}
+setInterval(prefetchLoop, 700);
+function stopPreview(t){
+  t.classList.remove('wait');
+  const v = t.querySelector('video.pv');
+  if(v){ v.pause(); v.removeAttribute('src'); v.load(); v.remove(); }
+}
+function attachPreview(){
+  if(!LIVE) return;
+  pre.length = 0;
+  $('view').querySelectorAll('.thumb[data-code]').forEach(t => {
+    if(io) io.observe(t);
+    t.addEventListener('mouseenter', () => {
+      hoverEl = t; clearTimeout(hoverT);
+      hoverT = setTimeout(async () => {
+        if(hoverEl !== t) return;
+        t.classList.add('wait');
+        let u = null; try { u = await getVideo(t.dataset.code); } catch(e){}
+        if(hoverEl !== t || !u){ t.classList.remove('wait'); return; }
+        const v = document.createElement('video');
+        v.className = 'pv'; v.muted = true; v.loop = true; v.playsInline = true; v.autoplay = true; v.preload = 'auto';
+        v.addEventListener('playing', () => t.classList.remove('wait'));
+        v.addEventListener('error', () => { delete vurl[t.dataset.code]; stopPreview(t); });
+        v.src = u; t.appendChild(v); v.play().catch(() => {});
+      }, 200);
+    });
+    t.addEventListener('mouseleave', () => { if(hoverEl === t) hoverEl = null; clearTimeout(hoverT); stopPreview(t); });
+  });
+}
+
+const COLS = [
+  ['name','Бренд'],['region','Регион'],['seg','Сегмент'],['f','Подписчики','r'],['med','Медиана','r'],['mx30','Макс. за 30 дн.','r'],
+  ['best30','Лучший залёт','r'],['hot30','Залётов ×3+ за 30 дн.','r'],['n30','Reels за 30 дн.','r'],['last','Последний Reels'],['state','Сбор']];
+function renderBrands(){
+  let L = D.accounts.filter(a => pass({h:a.h}));
+  const k = S.bsort, d = S.bdir;
+  L.sort((a,b) => { if(a.own!==b.own) return b.own-a.own; const x=a[k], y=b[k];
+    if(x==null&&y==null) return 0; if(x==null) return 1; if(y==null) return -1;
+    return (typeof x==='string' ? x.localeCompare(y,'ru') : x-y) * d; });
+  $('view').innerHTML = '<div class="tablewrap"><table><thead><tr>'+COLS.map(([c,l,r]) =>
+      '<th data-c="'+c+'" class="'+(r||'')+'">'+l+(S.bsort===c?' <span class="ar">'+(S.bdir<0?'↓':'↑')+'</span>':'')+'</th>').join('')+
+    '</tr></thead><tbody>'+L.map(a => '<tr data-h="'+a.h+'" class="'+(a.own?'own':'')+'">'+
+      '<td><b>'+esc(a.name)+'</b><span class="h">@'+esc(a.h)+'</span></td>'+
+      '<td>'+esc(a.region)+'</td><td>'+esc(a.seg)+'</td>'+
+      '<td class="r">'+fmt(a.f)+'</td><td class="r">'+fmt(a.med)+'</td><td class="r">'+fmt(a.mx30)+'</td>'+
+      '<td class="r">'+(a.best30?'<span class="pill '+xcls(a.best30)+'">'+fx(a.best30)+'</span>':'-')+'</td>'+
+      '<td class="r">'+(a.hot30!=null?a.hot30:'-')+'</td><td class="r">'+(a.n30!=null?a.n30:'-')+'</td>'+
+      '<td>'+(a.last?a.last.split('-').reverse().join('.'):'-')+'</td>'+
+      '<td class="'+(a.state==='ок'?'st-ok':'st-bad')+'">'+esc(a.state)+'</td></tr>').join('')+'</tbody></table></div>';
+  $('view').querySelectorAll('th').forEach(th => th.onclick = () => { const c = th.dataset.c;
+    if(S.bsort===c) S.bdir = -S.bdir; else { S.bsort = c; S.bdir = (c==='name'||c==='region'||c==='seg') ? 1 : -1; } save(); renderBrands(); });
+  $('view').querySelectorAll('tbody tr').forEach(tr => tr.onclick = () => openBrand(tr.dataset.h));
+}
+
+function openBrand(h){ S.brand = h; S.q = ''; $('q').value = ''; if(S.tab!=='new') S.tab = 'all'; S.per = 'all'; $('per').value = 'all'; S.minxAll = '0'; save(); window.scrollTo(0,0); render(); }
+function renderFound(){
+  const el = $('found');
+  if(S.brand){
+    const a = acc[S.brand];
+    el.innerHTML = '<div class="bp"><div><h2>'+esc(a.name)+'</h2><div class="h">@'+esc(a.h)+' · '+esc([a.region,a.seg].filter(Boolean).join(' · '))+'</div></div>'+
+      [['Подписчики',fmt(a.f)],['Медиана',fmt(a.med)],['Макс. за 30 дн.',fmt(a.mx30)],['Лучший залёт',a.best30?fx(a.best30):'-'],
+       ['Залётов ×3+ за 30 дн.',a.hot30!=null?a.hot30:'-'],['Reels за 30 дн.',a.n30!=null?a.n30:'-'],
+       ['Роликов в базе',(a.nall||0)+(a.since?' <span style="font-size:12px;font-weight:500;color:var(--muted)">с '+ddmmyy(a.since)+'</span>':'')]]
+        .map(([l,v]) => '<div class="st"><b>'+v+'</b><span>'+l+'</span></div>').join('')+
+      '<div class="act"><a href="https://www.instagram.com/'+a.h+'/reels/" target="_blank" rel="noopener">Открыть в Instagram</a><button id="bpx">Все бренды ✕</button></div></div>';
+    $('bpx').onclick = () => { S.brand = ''; render(); };
+    return;
+  }
+  const q = S.q.trim().toLowerCase().replace('@','');
+  if(S.tab==='brands'){
+    // поиск и фильтры молча сужают таблицу - показываем, что включено, и даём сбросить
+    const on = [S.q && '«'+S.q+'»', S.region, S.seg, S.src].filter(Boolean);
+    const n = D.accounts.filter(a => pass({h:a.h})).length;
+    el.innerHTML = on.length ? '<div class="flt">Показано '+n+' из '+D.accounts.length+' · фильтр: '+on.map(esc).join(', ')+
+      ' <button class="chip" id="fltx">Сбросить ✕</button></div>' : '';
+    if(on.length) $('fltx').onclick = () => { S.q = S.region = S.seg = S.src = ''; ['q','region','seg','src'].forEach(k => $(k).value = ''); save(); render(); };
+    return;
+  }
+  if(!q){ el.innerHTML = ''; return; }
+  const M = D.accounts.filter(a => a.name.toLowerCase().includes(q) || a.h.includes(q)).slice(0, 8);
+  el.innerHTML = M.length ? M.map(a => '<button class="fb" data-h="'+a.h+'"><div><b>'+esc(a.name)+'</b> <span>@'+esc(a.h)+'</span><br><span>медиана '+fmt(a.med)+
+      ' · лучший '+(a.best30?fx(a.best30):'-')+' · залётов '+(a.hot30||0)+' за 30 дн.</span></div></button>').join('') : '';
+  el.querySelectorAll('.fb').forEach(b => b.onclick = () => openBrand(b.dataset.h));
+}
+function render(){
+  limit = 120;
+  renderTabs();
+  renderFound();
+  if(S.tab==='brands'){ renderSegs([]); renderBrands(); return; }
+  const L = listFor(S.tab);
+  renderSegs(L);
+  renderReels(L);
+}
+render();
+$('foot').textContent = (location.protocol.startsWith('http') ? 'Наведи на обложку - ролик проиграется без звука, клик открывает его в Instagram. ' : 'Превью роликов при наведении работает, если открыть дашборд через ДАШБОРД.bat. ')+'Медиана - по 18 последним Reels аккаунта (без закреплённых и роликов младше 3 дней). Кратность = просмотры ролика / медиана. Прирост - сколько ролик набирал в сутки с прошлого замера. Данные: data/latest.json, собрано '+D.built.replace('T',' ')+'.';
+})();
+</script>
+</body>
+</html>
