@@ -48,7 +48,7 @@ python monitor.py --no-open        # сбор + пересборка дашбо�
 python monitor.py --serve          # дашборд с превью на http://localhost:5612/dashboard.html
 ```
 
-Без сбора дашборд открывается на примере данных из `sample/` (12 брендов, урезанная выгрузка 20.10).
+Без сбора дашборд открывается на примере данных из `sample/` (12 брендов, урезанная выгрузка среза 17.10).
 
 На Linux-сервере в `launch()` надо убрать `channel='msedge'` (будет Chromium из Playwright), а сбор запускать с `--hidden` по cron раз в сутки, например `0 6 * * * cd /opt/monitor && python monitor.py --hidden --no-open`. Сессия IG лежит в `_session/browser_tech` (профиль браузера) и `_session/ig_cookies.json`. Если IG разлогинит, сборщик остановится с сообщением, тогда снова `--login`.
 
