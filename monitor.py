@@ -556,9 +556,23 @@ CODE_RE = re.compile(r'^[A-Za-z0-9_-]{5,20}$')
 def serve():
     import http.server, threading, queue, tempfile, urllib.parse, socket
     url_main = 'http://localhost:%d/dashboard.html' % PORT
-    with socket.socket() as sk:
-        if sk.connect_ex(('127.0.0.1', PORT)) == 0:
-            print('Дашборд уже запущен:', url_main)
+    def busy():
+        with socket.socket() as sk:
+            return sk.connect_ex(('127.0.0.1', PORT)) == 0
+
+    if busy():
+        # старый сервер мог остаться со вчера (после сна его браузеры мертвы) - просим его закрыться
+        print('Закрываю прошлый запуск дашборда...')
+        try:
+            urllib.request.urlopen('http://127.0.0.1:%d/api/quit' % PORT, timeout=5).read()
+        except Exception:
+            pass
+        for _ in range(20):
+            if not busy():
+                break
+            time.sleep(0.5)
+        if busy():
+            print('Порт %d занят другим окном. Закрой старое чёрное окно дашборда и запусти снова.' % PORT)
             webbrowser.open(url_main)
             return
     cache_path = os.path.join(DATA, 'video_cache.json')
@@ -574,10 +588,18 @@ def serve():
     alive = [0]
 
     def worker():
+        # браузер упал (сон компьютера, обновление Edge) - поднимаем заново; сдаёмся после 5 быстрых падений подряд
+        fails = 0
         try:
-            run_worker()
-        except Exception as e:
-            print('Превью не работает: %s' % e, flush=True)
+            while fails < 5:
+                t0 = time.time()
+                try:
+                    run_worker()
+                except Exception as e:
+                    print('Превью: скрытый браузер упал (%s), перезапускаю' % str(e)[:120], flush=True)
+                fails = fails + 1 if time.time() - t0 < 120 else 1
+                time.sleep(3)
+            print('Превью не работает: браузер падает при запуске. Закрой окно и запусти ДАШБОРД.bat снова.', flush=True)
         finally:
             with lock:
                 alive[0] -= 1
@@ -604,6 +626,7 @@ def serve():
                     lp.goto('https://www.instagram.com/robots.txt', timeout=20000)
                 return lp.evaluate(LOGGED_VIDEO_JS, code) or ''
 
+            errs = 0
             while True:
                 code, box, ev = jobs.get()
                 if time.time() - box['t'] > 10:       # пользователь уже ушёл с карточки
@@ -617,8 +640,13 @@ def serve():
                     except Exception:
                         pass
                     u = pg.evaluate("() => { const v = document.querySelector('video'); return v ? (v.currentSrc || v.src || '') : ''; }")
-                except Exception:
-                    pass
+                    errs = 0
+                except Exception as e:
+                    errs += 1
+                    if errs >= 3 or pg.is_closed():   # браузер больше не отвечает - пусть worker() поднимет новый
+                        box['url'] = ''
+                        ev.set()
+                        raise RuntimeError(str(e)[:120])
                 if not u.startswith('http'):
                     try:
                         u = logged_url(code)
@@ -627,7 +655,10 @@ def serve():
                 if u.startswith('http'):
                     with lock:
                         cache[code] = [u, expiry(u)]
-                        wjson(cache_path, cache)
+                        try:
+                            wjson(cache_path, cache)
+                        except OSError:       # файл кэша занят (антивирус) - не страшно, запишем со следующей ссылкой
+                            pass
                 box['url'] = u
                 ev.set()
 
@@ -643,6 +674,11 @@ def serve():
             pass
 
         def do_GET(self):
+            if self.path.startswith('/api/quit'):     # новый запуск ДАШБОРД.bat закрывает старый
+                self.send_response(200)
+                self.end_headers()
+                threading.Thread(target=srv.shutdown, daemon=True).start()
+                return
             if not self.path.startswith('/api/video'):
                 return super().do_GET()
             code = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query).get('code', [''])[0]
