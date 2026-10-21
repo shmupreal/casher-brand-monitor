@@ -673,6 +673,12 @@ def serve():
         def log_message(self, *a):
             pass
 
+        def end_headers(self):
+            # страницу и данные браузер всегда сверяет с диском, иначе после обновления показывает старую версию
+            if not self.path.startswith('/thumbs/'):
+                self.send_header('Cache-Control', 'no-cache')
+            super().end_headers()
+
         def do_GET(self):
             if self.path.startswith('/api/quit'):     # новый запуск ДАШБОРД.bat закрывает старый
                 self.send_response(200)

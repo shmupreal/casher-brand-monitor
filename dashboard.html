@@ -157,7 +157,17 @@ footer{margin-top:30px;color:var(--faint);font-size:12px}
   <footer id="foot"></footer>
 </div>
 <script src="dashboard_data.js"></script>
-<script>if(!window.MONITOR) document.write('<script src="sample/dashboard_data.js"><\/script>');</script>
+<script>if(!window.MONITOR) document.write('<script src="sample/dashboard_data.js"><\/script>');
+// обложка не загрузилась (сервер перезапускался, сеть мигнула) - пробуем ещё 4 раза, потом остаётся буква-заглушка
+function imgRetry(i){
+  const n = +(i.dataset.tries || 0);
+  if(n >= 4){ i.remove(); return; }
+  i.dataset.tries = n + 1;
+  if(!i.dataset.src0) i.dataset.src0 = i.getAttribute('src');
+  const src = i.dataset.src0;
+  if(/^https?:/.test(src)){ i.remove(); return; }   // протухшая ссылка IG CDN - повтор не поможет
+  setTimeout(() => { i.src = src + '?r=' + (n + 1); }, 1500 * (n + 1));
+}</script>
 <script>
 (function(){
 const D = window.MONITOR;
@@ -284,7 +294,7 @@ function card(r){
   return '<div class="card'+(a.own?' own':'')+'">'+
     '<a class="thumb" data-code="'+r.code+'" href="'+url+'" target="_blank" rel="noopener">'+
       '<div class="ph">'+init+'</div>'+
-      (r.th ? '<img loading="lazy" referrerpolicy="no-referrer" src="'+esc(r.th)+'" alt="" onerror="this.remove()">' : '')+
+      (r.th ? '<img loading="lazy" referrerpolicy="no-referrer" src="'+esc(r.th)+'" alt="" onerror="imgRetry(this)">' : '')+
       (r.x!=null ? '<span class="xb '+xcls(r.x)+'">'+fx(r.x)+'</span>' : '')+
       '<div class="tag">'+(a.own?'<span class="us">наш</span>':'')+(r.new?'<span class="nw">новый</span>':'')+'<span>'+ago(r.age)+'</span></div>'+
     '</a>'+
